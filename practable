@@ -1,0 +1,7 @@
+create table prac
+(PersonID int,
+    LastName varchar(30),
+    FirstName varchar(30),
+    Address varchar(30),
+    City varchar(30))
+    
