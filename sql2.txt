@@ -1,0 +1,23 @@
+SELECT 
+    employee.id,
+    employee.first_name,
+    employee.last_name,
+    call.start_time, 
+    call.end_time,
+    DATEDIFF("SECOND", call.start_time, call.end_time) AS call_duration,
+    duration_sum.call_duration_sum,
+    CAST( CAST(DATEDIFF("SECOND", call.start_time, call.end_time) AS DECIMAL(7,2)) / CAST(duration_sum.call_duration_sum AS DECIMAL(7,2)) AS DECIMAL(4,4)) AS call_percentage
+FROM call
+INNER JOIN employee ON call.employee_id = employee.id
+INNER JOIN (
+    SELECT 
+        employee.id,
+        SUM(DATEDIFF("SECOND", call.start_time, call.end_time)) AS call_duration_sum
+    FROM call
+    INNER JOIN employee ON call.employee_id = employee.id
+    GROUP BY
+        employee.id
+) AS duration_sum ON employee.id = duration_sum.id
+ORDER BY
+    employee.id ASC,
+    call.start_time ASC;
